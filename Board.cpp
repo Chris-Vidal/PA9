@@ -204,7 +204,7 @@ void Board::connectPieces()
                 pieces[i][j].mBorderTile[6] = &pieces[i - 1][j + 1]; // lower-left
                 pieces[i][j].mBorderTile[5] = &pieces[i][j + 1]; // center-lower
             }
-            else if (i == 9 && j == 0) // lower right corner
+            else if (i == 9 && j == 9) // lower right corner
             {
                 pieces[i][j].mBorderTile[0] = &pieces[i - 1][j - 1]; // upper-left
                 pieces[i][j].mBorderTile[1] = &pieces[i][j - 1]; // center-upper
