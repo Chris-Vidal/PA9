@@ -51,6 +51,7 @@ void Board::leftClick(sf::RenderWindow& window, sf::RectangleShape& board)
                 ((sf::Mouse::getPosition(window).y > 900 && j == 9) || sf::Mouse::getPosition(window).y < pieces[i][j + 1].getPosition().y))
             {
                 pieces[i][j].activate();
+                mask[i][j].setColor(sf::Color::Transparent);
             }
         }
     }
@@ -62,17 +63,16 @@ void Board::setup()
     sf::RectangleShape board(sf::Vector2f(1000.0f, 1000.0f));
     board.setFillColor(sf::Color::Color(178, 190, 181));
 
-    /*Tile pieces[10][10];
+    //Tile pieces[10][10];
     for (int i = 0; i < 10; i++)
     {
         int xcoor = i * 100;
         for (int f = 0; f < 10; f++)
         {
             int ycoor = f * 100;
-            pieces[i][f].setup(xcoor, ycoor);
+            mask[i][f].setup(xcoor, ycoor);
         }
-    }*/
-    //pieces.setup(0, 0);
+    }
 
     while (window.isOpen())
     {
@@ -109,9 +109,6 @@ void Board::setup()
             //std::uniform_int_distribution<std::mt19937::result_type> dist6(1, 6); // distribution in range [1, 6]
 
             //std::cout << dist6(rng) << std::endl;
-
-            //10 bombs, board is 10 X 10;
-
         }
 
         window.clear();
@@ -123,6 +120,14 @@ void Board::setup()
                 window.draw(pieces[i][f].getTile());
             }
         }
+        for (int i = 0; i < 10; i++)
+        {
+            for (int f = 0; f < 10; f++)
+            {
+                window.draw(mask[i][f].getTile());
+            }
+        }
+
         window.display();
     }
 }
@@ -204,7 +209,7 @@ void Board::connectPieces()
                 pieces[i][j].mBorderTile[6] = &pieces[i - 1][j + 1]; // lower-left
                 pieces[i][j].mBorderTile[5] = &pieces[i][j + 1]; // center-lower
             }
-            else if (i == 9 && j == 0) // lower right corner
+            else if (i == 9 && j == 9) // lower right corner
             {
                 pieces[i][j].mBorderTile[0] = &pieces[i - 1][j - 1]; // upper-left
                 pieces[i][j].mBorderTile[1] = &pieces[i][j - 1]; // center-upper
