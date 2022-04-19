@@ -1,9 +1,10 @@
 #include "Minesweeper.h"
 #include "Board.h"
 
+
 void Minesweeper::initialize()
 {
-	Board start;
+	Board start(5);
 	start.setup();
 }
 
