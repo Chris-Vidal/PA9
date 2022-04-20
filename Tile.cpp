@@ -20,7 +20,7 @@ void Tile::setup(const int& x, const int& y)
     tile.setOutlineColor(sf::Color::Black);
     tile.setOutlineThickness(1);
     tile.setPosition(x, y);*/
-    setFillColor(sf::Color::Color(178, 190, 181));
+    setFillColor(sf::Color::White);
     setOutlineColor(sf::Color::Black);
     setOutlineThickness(1);
     setPosition(x, y);
@@ -35,7 +35,17 @@ void Tile::setup(const int& x, const int& y)
     }
     else if (mType == 'n')
     {
-        setFillColor(sf::Color::Blue);
+        switch (borderBombCount()) // color depends on number of bombs next to Tile
+        {
+        case 1: setColor(sf::Color::Blue); break;
+        case 2: setColor(sf::Color::Green); break;
+        case 3: setColor(sf::Color::Yellow); break;
+        case 4: setColor(sf::Color::Magenta); break;
+        case 5: setColor(sf::Color::Cyan); break;
+        case 6: setColor(sf::Color::Cyan); break;
+        case 7: setColor(sf::Color::Cyan); break;
+        case 8: setColor(sf::Color::Cyan); break;
+        }
     }
 
 }
@@ -66,6 +76,16 @@ bool Tile::bombCheck()
     return returnBool;
 }
 
+bool Tile::isGameOver()
+{
+    return mGameOver;
+}
+
+void Tile::gameOver()
+{
+    mGameOver = true;
+}
+
 // Author: NW
 // Date: 4/18/2022
 // Description: Count number of bombs bordering Tile
@@ -90,8 +110,8 @@ int Tile::borderBombCount()
 // Description: Activate Tile with behavior dependent upon Tile type
 void Tile::activate()
 {
-    for (int i = 0; i < 8; i++)
-    {
+    /*for (int i = 0; i < 8; i++)
+    {*/
         mClicked = true;
         if (mType == 'b')
         {
@@ -99,7 +119,7 @@ void Tile::activate()
         }
         else if (mType == 'e')
         {
-            setFillColor(sf::Color::Red);
+            setFillColor(sf::Color::Color(100, 100, 100));
 
             // tile is blank, activate all surrounding tiles
             for (int j = 0; j < 8; j++)
@@ -115,7 +135,7 @@ void Tile::activate()
             // Tile is of number type
 
         }
-    }
+    //}
 }
 
 // Author: NW
@@ -151,3 +171,39 @@ void Tile::setAdjacentBombCount()
 {
     mBombNeighborCount = borderBombCount();
 }
+
+// Author: NW
+// Date: 4/19/2022
+// Description: Determine if Tile has been clicked
+bool Tile::getClicked()
+{
+    return mClicked;
+}
+
+// Author: NW
+// Date: 4/19/2022
+// Description: Sets click condition of Tile
+void Tile::setClicked(bool isClicked)
+{
+    mClicked = isClicked;
+}
+
+// Author: NW
+// Date: 4/19/2022
+// Description: Determine the number of neighboring bombs
+int Tile::getNeighborBombs()
+{
+    return mBombNeighborCount;
+}
+
+// Author: NW
+// Date: 4/19/2022
+// Description: Set the number of neighboring bombs
+void Tile::setNeighborBombs(int num) 
+{
+    mBombNeighborCount = num;
+}
+
+
+
+

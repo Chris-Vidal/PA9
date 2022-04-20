@@ -1,7 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Minesweeper.h"
 
-
 int main()
 {
 	Minesweeper app;

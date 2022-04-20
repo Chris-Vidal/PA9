@@ -11,7 +11,7 @@ Board::Board()
         for (int f = 0; f < 10; f++)
         {
             int ycoor = f * 100;
-            pieces[i][f].setup(xcoor, ycoor);
+            pieces[i][f]->setup(xcoor, ycoor);
         }
     }
 }
@@ -21,6 +21,13 @@ Board::Board()
 // Description: Construct Board, plant bombs, assign Tile type, and connect neighboring Tiles
 Board::Board(int numBombs)
 {
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            pieces[i][j] = new Tile();
+        }
+    }
     placeBombs(numBombs);
     connectPieces();
     populateNumbers();
@@ -31,7 +38,7 @@ Board::Board(int numBombs)
         for (int f = 0; f < 10; f++)
         {
             int ycoor = f * 100;
-            pieces[i][f].setup(xcoor, ycoor);
+            pieces[i][f]->setup(xcoor, ycoor);
         }
     }
 }
@@ -45,13 +52,36 @@ void Board::leftClick(sf::RenderWindow& window, sf::RectangleShape& board)
     {
         for (int j = 0; j < 10; j++)
         {
-            if (sf::Mouse::getPosition(window).x > pieces[i][j].getPosition().x &&
-                ((sf::Mouse::getPosition(window).x > 900 && i == 9) || sf::Mouse::getPosition(window).x < pieces[i + 1][j].getPosition().x) &&
-                sf::Mouse::getPosition(window).y > pieces[i][j].getPosition().y &&
-                ((sf::Mouse::getPosition(window).y > 900 && j == 9) || sf::Mouse::getPosition(window).y < pieces[i][j + 1].getPosition().y))
+            if (sf::Mouse::getPosition(window).x > pieces[i][j]->getPosition().x &&
+                ((sf::Mouse::getPosition(window).x > 900 && i == 9) || sf::Mouse::getPosition(window).x < pieces[i + 1][j]->getPosition().x) &&
+                sf::Mouse::getPosition(window).y > pieces[i][j]->getPosition().y &&
+                ((sf::Mouse::getPosition(window).y > 900 && j == 9) || sf::Mouse::getPosition(window).y < pieces[i][j + 1]->getPosition().y))
             {
-                pieces[i][j].activate();
-                mask[i][j].setColor(sf::Color::Transparent);
+                pieces[i][j]->activate();
+                revealBoard();
+            }
+        }
+    }
+}
+
+// Author: NW
+// Date: 4/19/2022
+// Description: Determine which Tile to activate based on mouse position
+void Board::rightClick(sf::RenderWindow& window, sf::RectangleShape& board)
+{
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            if (sf::Mouse::getPosition(window).x > pieces[i][j]->getPosition().x &&
+                ((sf::Mouse::getPosition(window).x > 900 && i == 9) || sf::Mouse::getPosition(window).x < pieces[i + 1][j]->getPosition().x) &&
+                sf::Mouse::getPosition(window).y > pieces[i][j]->getPosition().y &&
+                ((sf::Mouse::getPosition(window).y > 900 && j == 9) || sf::Mouse::getPosition(window).y < pieces[i][j + 1]->getPosition().y))
+            {
+                if (pieces[i][j]->getClicked() != true)
+                {
+                    mask[i][j].setColor(sf::Color::Red); // flag
+                }
             }
         }
     }
@@ -97,7 +127,7 @@ void Board::setup()
             {
                 //clicking right mouse button sets a flag. don't know how to do this.
 
-
+                rightClick(window, board);
             }
 
 
@@ -117,7 +147,7 @@ void Board::setup()
         {
             for (int f = 0; f < 10; f++)
             {
-                window.draw(pieces[i][f].getTile());
+                window.draw(pieces[i][f]->getTile());
             }
         }
         for (int i = 0; i < 10; i++)
@@ -127,8 +157,15 @@ void Board::setup()
                 window.draw(mask[i][f].getTile());
             }
         }
+        
 
         window.display();
+        if (isGameOver())
+        {
+            std::cout << "Game Over." << std::endl;
+            system("pause");
+            window.close();
+        }
     }
 }
 
@@ -153,9 +190,10 @@ void Board::placeBombs(int count)
         randX = rand() % 10;
         randY = rand() % 10;
 
-        if (pieces[randX][randY].getType() == 'e')
+        if (pieces[randX][randY]->getType() == 'e')
         {
-            pieces[randX][randY].placeBomb();
+            pieces[randX][randY]->placeBomb();
+            pieces[randX][randY] = new BombTile(*pieces[randX][randY]);
             count--;
         }
     } while (count != 0);
@@ -170,12 +208,12 @@ void Board::populateNumbers()
     {
         for (int j = 0; j < 10; j++)
         {
-            pieces[i][j].setAdjacentBombCount();
-            if (pieces[i][j].borderBombCount() != 0)
+            pieces[i][j]->setAdjacentBombCount();
+            if (pieces[i][j]->borderBombCount() != 0)
             {
-                if (pieces[i][j].getType() != 'b')
+                if (pieces[i][j]->getType() != 'b')
                 {
-                    pieces[i][j].setType('n');
+                    pieces[i][j]->setType('n');
                 }
             }
         }
@@ -193,71 +231,110 @@ void Board::connectPieces()
         {
             if (i == 0 && j == 0) // upper-left corner
             {
-                pieces[i][j].mBorderTile[3] = &pieces[i + 1][j]; // center-right
-                pieces[i][j].mBorderTile[4] = &pieces[i + 1][j + 1]; // lower-right
-                pieces[i][j].mBorderTile[5] = &pieces[i][j + 1]; // center-lower
+                pieces[i][j]->mBorderTile[3] = pieces[i + 1][j]; // center-right
+                pieces[i][j]->mBorderTile[4] = pieces[i + 1][j + 1]; // lower-right
+                pieces[i][j]->mBorderTile[5] = pieces[i][j + 1]; // center-lower
             }
             else if (i == 0 && j == 9) // lower-left corner
             {
-                pieces[i][j].mBorderTile[1] = &pieces[i][j - 1]; // center-upper
-                pieces[i][j].mBorderTile[2] = &pieces[i + 1][j - 1]; // upper-right
-                pieces[i][j].mBorderTile[3] = &pieces[i + 1][j]; // center-right
+                pieces[i][j]->mBorderTile[1] = pieces[i][j - 1]; // center-upper
+                pieces[i][j]->mBorderTile[2] = pieces[i + 1][j - 1]; // upper-right
+                pieces[i][j]->mBorderTile[3] = pieces[i + 1][j]; // center-right
             }
             else if (i == 9 && j == 0) // upper right corner
             {
-                pieces[i][j].mBorderTile[7] = &pieces[i - 1][j]; // center-left
-                pieces[i][j].mBorderTile[6] = &pieces[i - 1][j + 1]; // lower-left
-                pieces[i][j].mBorderTile[5] = &pieces[i][j + 1]; // center-lower
+                pieces[i][j]->mBorderTile[7] = pieces[i - 1][j]; // center-left
+                pieces[i][j]->mBorderTile[6] = pieces[i - 1][j + 1]; // lower-left
+                pieces[i][j]->mBorderTile[5] = pieces[i][j + 1]; // center-lower
             }
             else if (i == 9 && j == 9) // lower right corner
             {
-                pieces[i][j].mBorderTile[0] = &pieces[i - 1][j - 1]; // upper-left
-                pieces[i][j].mBorderTile[1] = &pieces[i][j - 1]; // center-upper
-                pieces[i][j].mBorderTile[7] = &pieces[i - 1][j]; // center-left
+                pieces[i][j]->mBorderTile[0] = pieces[i - 1][j - 1]; // upper-left
+                pieces[i][j]->mBorderTile[1] = pieces[i][j - 1]; // center-upper
+                pieces[i][j]->mBorderTile[7] = pieces[i - 1][j]; // center-left
             }
             else if (i == 0) // left border non-corner
             {
-                pieces[i][j].mBorderTile[1] = &pieces[i][j - 1]; // center-upper
-                pieces[i][j].mBorderTile[2] = &pieces[i + 1][j - 1]; // upper-right
-                pieces[i][j].mBorderTile[3] = &pieces[i + 1][j]; // center-right
-                pieces[i][j].mBorderTile[4] = &pieces[i + 1][j + 1]; // lower-right
-                pieces[i][j].mBorderTile[5] = &pieces[i][j + 1]; // center-lower
+                pieces[i][j]->mBorderTile[1] = pieces[i][j - 1]; // center-upper
+                pieces[i][j]->mBorderTile[2] = pieces[i + 1][j - 1]; // upper-right
+                pieces[i][j]->mBorderTile[3] = pieces[i + 1][j]; // center-right
+                pieces[i][j]->mBorderTile[4] = pieces[i + 1][j + 1]; // lower-right
+                pieces[i][j]->mBorderTile[5] = pieces[i][j + 1]; // center-lower
             }
             else if (i == 9) // right border non-corner
             {
-                pieces[i][j].mBorderTile[0] = &pieces[i - 1][j - 1]; // upper-left
-                pieces[i][j].mBorderTile[1] = &pieces[i][j - 1]; // center-upper
-                pieces[i][j].mBorderTile[5] = &pieces[i][j + 1]; // center-lower
-                pieces[i][j].mBorderTile[6] = &pieces[i - 1][j + 1]; // lower-left
-                pieces[i][j].mBorderTile[7] = &pieces[i - 1][j]; // center-left
+                pieces[i][j]->mBorderTile[0] = pieces[i - 1][j - 1]; // upper-left
+                pieces[i][j]->mBorderTile[1] = pieces[i][j - 1]; // center-upper
+                pieces[i][j]->mBorderTile[5] = pieces[i][j + 1]; // center-lower
+                pieces[i][j]->mBorderTile[6] = pieces[i - 1][j + 1]; // lower-left
+                pieces[i][j]->mBorderTile[7] = pieces[i - 1][j]; // center-left
             }
             else if (j == 0) // upper border non-corner
             {
-                pieces[i][j].mBorderTile[3] = &pieces[i + 1][j]; // center-right
-                pieces[i][j].mBorderTile[4] = &pieces[i + 1][j + 1]; // lower-right
-                pieces[i][j].mBorderTile[5] = &pieces[i][j + 1]; // center-lower
-                pieces[i][j].mBorderTile[6] = &pieces[i - 1][j + 1]; // lower-left
-                pieces[i][j].mBorderTile[7] = &pieces[i - 1][j]; // center-left
+                pieces[i][j]->mBorderTile[3] = pieces[i + 1][j]; // center-right
+                pieces[i][j]->mBorderTile[4] = pieces[i + 1][j + 1]; // lower-right
+                pieces[i][j]->mBorderTile[5] = pieces[i][j + 1]; // center-lower
+                pieces[i][j]->mBorderTile[6] = pieces[i - 1][j + 1]; // lower-left
+                pieces[i][j]->mBorderTile[7] = pieces[i - 1][j]; // center-left
             }
             else if (j == 9) // lower border non-corner
             {
-                pieces[i][j].mBorderTile[0] = &pieces[i - 1][j - 1]; // upper-left
-                pieces[i][j].mBorderTile[1] = &pieces[i][j - 1]; // center-upper
-                pieces[i][j].mBorderTile[2] = &pieces[i + 1][j - 1]; // upper-right
-                pieces[i][j].mBorderTile[3] = &pieces[i + 1][j]; // center-right
-                pieces[i][j].mBorderTile[7] = &pieces[i - 1][j]; // center-left
+                pieces[i][j]->mBorderTile[0] = pieces[i - 1][j - 1]; // upper-left
+                pieces[i][j]->mBorderTile[1] = pieces[i][j - 1]; // center-upper
+                pieces[i][j]->mBorderTile[2] = pieces[i + 1][j - 1]; // upper-right
+                pieces[i][j]->mBorderTile[3] = pieces[i + 1][j]; // center-right
+                pieces[i][j]->mBorderTile[7] = pieces[i - 1][j]; // center-left
             }
             else // non-border
             {
-                pieces[i][j].mBorderTile[0] = &pieces[i - 1][j - 1]; // upper-left
-                pieces[i][j].mBorderTile[1] = &pieces[i][j - 1]; // center-upper
-                pieces[i][j].mBorderTile[2] = &pieces[i + 1][j - 1]; // upper-right
-                pieces[i][j].mBorderTile[3] = &pieces[i + 1][j]; // center-right
-                pieces[i][j].mBorderTile[4] = &pieces[i + 1][j + 1]; // lower-right
-                pieces[i][j].mBorderTile[5] = &pieces[i][j + 1]; // center-lower
-                pieces[i][j].mBorderTile[6] = &pieces[i - 1][j + 1]; // lower-left
-                pieces[i][j].mBorderTile[7] = &pieces[i - 1][j]; // center-left
+                pieces[i][j]->mBorderTile[0] = pieces[i - 1][j - 1]; // upper-left
+                pieces[i][j]->mBorderTile[1] = pieces[i][j - 1]; // center-upper
+                pieces[i][j]->mBorderTile[2] = pieces[i + 1][j - 1]; // upper-right
+                pieces[i][j]->mBorderTile[3] = pieces[i + 1][j]; // center-right
+                pieces[i][j]->mBorderTile[4] = pieces[i + 1][j + 1]; // lower-right
+                pieces[i][j]->mBorderTile[5] = pieces[i][j + 1]; // center-lower
+                pieces[i][j]->mBorderTile[6] = pieces[i - 1][j + 1]; // lower-left
+                pieces[i][j]->mBorderTile[7] = pieces[i - 1][j]; // center-left
             }
         }
     }
 }
+
+// Author: NW
+// Date: 4/19/2022
+// Description: Determine if game is over
+bool Board::isGameOver()
+{
+    bool returnBool = false;
+
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            if (pieces[i][j]->isGameOver() == true)
+            {
+                returnBool = true;
+            }
+        }
+    }
+
+    return returnBool;
+}
+
+// Author: NW
+// Date: 4/19/2022
+// Description: reveals Tiles that have been clicked
+void Board::revealBoard()
+{
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            if (pieces[i][j]->getClicked() == true)
+            {
+                mask[i][j].setColor(sf::Color::Transparent);
+            }
+        }
+    }
+}
+

@@ -4,7 +4,7 @@
 
 void Minesweeper::initialize()
 {
-	Board start(20);
+	Board start(12);
 	start.setup();
 }
 

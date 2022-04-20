@@ -9,6 +9,8 @@ private:
 	char mType;
 	bool mClicked;
 	int mBombNeighborCount;
+	bool mGameOver;
+	
 
 
 public:
@@ -20,13 +22,19 @@ public:
 
 	bool bombCheck();
 	int borderBombCount();
-	void activate();
+	virtual void activate();
 	char getType();
 	void placeBomb();
 	void setAdjacentBombCount();
 	void setType(char type);
 
 	Tile* mBorderTile[8];
+	bool isGameOver();
+	void gameOver();
+	bool getClicked();
+	void setClicked(bool isClicked);
+	int getNeighborBombs();
+	void setNeighborBombs(int num);
 
 };
 

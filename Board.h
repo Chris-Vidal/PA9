@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "Tile.h"
+#include "BombTile.h"
 
 #include <random>
 
@@ -20,11 +20,16 @@ public:
     void placeBombs(int count);
     void populateNumbers();
 
+    bool isGameOver();
+
     void connectPieces();
     void leftClick(sf::RenderWindow& window, sf::RectangleShape& board);
+    void rightClick(sf::RenderWindow& window, sf::RectangleShape& board);
+
+    void revealBoard();
 
 private:
-    Tile pieces[10][10];
+    Tile* pieces[10][10];
     Tile mask[10][10];
 };
 
