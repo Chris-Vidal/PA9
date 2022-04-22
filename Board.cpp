@@ -166,6 +166,11 @@ void Board::setup()
             system("pause");
             window.close();
         }
+        else if (gameWon()) {
+            std::cout << "Game won." << std::endl;
+            system("pause");
+            window.close();
+        }
     }
 }
 
@@ -336,5 +341,32 @@ void Board::revealBoard()
             }
         }
     }
+}
+
+// Author: MS
+// Date: 4/21/2022
+// Description: Checks to see if the game is won
+bool Board::gameWon() {
+    bool win = false;
+
+    for (int i = 0; i < 10; i++) {
+        
+        for (int j = 0; j < 10; j++) {
+            
+            if (pieces[i][j]->getClicked() == true) {
+                // checks to see if tiles are clicked
+                win = true;
+            }
+            else if (pieces[i][j]->bombCheck() == true) {
+                // if not clicked checks to see if the tiles are bombs
+                win = true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    return win;
 }
 
