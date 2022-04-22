@@ -28,6 +28,8 @@ public:
 
     void revealBoard();
 
+    bool gameWon();
+
 private:
     Tile* pieces[10][10];
     Tile mask[10][10];
