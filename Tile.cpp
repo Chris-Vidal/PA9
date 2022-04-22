@@ -37,17 +37,61 @@ void Tile::setup(const int& x, const int& y)
     {
         switch (borderBombCount()) // color depends on number of bombs next to Tile
         {
-        case 1: setColor(sf::Color::Blue); break;
-        case 2: setColor(sf::Color::Green); break;
-        case 3: setColor(sf::Color::Yellow); break;
-        case 4: setColor(sf::Color::Magenta); break;
-        case 5: setColor(sf::Color::Cyan); break;
-        case 6: setColor(sf::Color::Cyan); break;
-        case 7: setColor(sf::Color::Cyan); break;
-        case 8: setColor(sf::Color::Cyan); break;
+        case 1: //setColor(sf::Color::Blue); break;
+        {
+            setColor(sf::Color::Cyan);
+            tileText.loadFromFile("1.png");
+            setTexture(&tileText);
+            break;
+        }
+
+        case 2:
+        {
+            setColor(sf::Color::Yellow);
+            tileText.loadFromFile("2.png");
+            setTexture(&tileText);
+            break;
+        }
+        case 3:// setColor(sf::Color::Yellow); break;
+        {
+            setColor(sf::Color::Green);
+            tileText.loadFromFile("3.png");
+            setTexture(&tileText);
+            break;
+        }
+
+        case 4:// setColor(sf::Color::Magenta); break;
+        {
+            tileText.loadFromFile("4.png");
+            setTexture(&tileText);
+            break;
+        }
+        case 5:
+        {
+            tileText.loadFromFile("5.png");
+            setTexture(&tileText);
+            break;
+        }
+        case 6:
+        {
+            tileText.loadFromFile("6.png");
+            setTexture(&tileText);
+            break;
+        }
+        case 7: 
+        {
+            tileText.loadFromFile("7.png");
+            setTexture(&tileText);
+            break;
+        }
+        case 8:
+        {
+            tileText.loadFromFile("8.png");
+            setTexture(&tileText);
+            break;
+        }
         }
     }
-
 }
 
 sf::RectangleShape Tile::getTile() const
@@ -204,6 +248,19 @@ void Tile::setNeighborBombs(int num)
     mBombNeighborCount = num;
 }
 
-
-
-
+bool Tile::flag(bool check, bool input)
+{
+    if (check && input)
+    {
+        //tileText.~Texture();
+        setTexture(NULL);
+        return false;
+    }
+    else
+    {
+        tileText.loadFromFile("flag.png");
+        setTexture(&tileText);
+        return true;
+    }
+    return check;
+}

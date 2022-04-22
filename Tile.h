@@ -10,8 +10,7 @@ private:
 	bool mClicked;
 	int mBombNeighborCount;
 	bool mGameOver;
-	
-
+	sf::Texture tileText;
 
 public:
 	Tile();
@@ -35,6 +34,5 @@ public:
 	void setClicked(bool isClicked);
 	int getNeighborBombs();
 	void setNeighborBombs(int num);
-
+	bool flag(bool check, bool input);
 };
-

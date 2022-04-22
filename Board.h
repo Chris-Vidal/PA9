@@ -24,7 +24,7 @@ public:
 
     void connectPieces();
     void leftClick(sf::RenderWindow& window, sf::RectangleShape& board);
-    void rightClick(sf::RenderWindow& window, sf::RectangleShape& board);
+    void rightClick(sf::RenderWindow& window, sf::RectangleShape& board, bool& input);
 
     void revealBoard();
 
@@ -33,6 +33,6 @@ public:
 private:
     Tile* pieces[10][10];
     Tile mask[10][10];
+    bool check = false;
+
 };
-
-

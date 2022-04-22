@@ -67,7 +67,7 @@ void Board::leftClick(sf::RenderWindow& window, sf::RectangleShape& board)
 // Author: NW
 // Date: 4/19/2022
 // Description: Determine which Tile to activate based on mouse position
-void Board::rightClick(sf::RenderWindow& window, sf::RectangleShape& board)
+void Board::rightClick(sf::RenderWindow& window, sf::RectangleShape& board, bool& input)
 {
     for (int i = 0; i < 10; i++)
     {
@@ -80,7 +80,7 @@ void Board::rightClick(sf::RenderWindow& window, sf::RectangleShape& board)
             {
                 if (pieces[i][j]->getClicked() != true)
                 {
-                    mask[i][j].setColor(sf::Color::Red); // flag
+                    check = mask[i][j].flag(check, input);
                 }
             }
         }
@@ -93,6 +93,7 @@ void Board::setup()
     sf::RectangleShape board(sf::Vector2f(1000.0f, 1000.0f));
     board.setFillColor(sf::Color::Color(178, 190, 181));
 
+    bool input = false;
     //Tile pieces[10][10];
     for (int i = 0; i < 10; i++)
     {
@@ -126,8 +127,8 @@ void Board::setup()
             if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
             {
                 //clicking right mouse button sets a flag. don't know how to do this.
-
-                rightClick(window, board);
+                input = true;
+                rightClick(window, board, input);
             }
 
 
