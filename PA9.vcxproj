@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\PA9c\Menu.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="BombTile.cpp" />
     <ClCompile Include="Minesweeper.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\PA9c\Menu.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="BombTile.h" />
     <ClInclude Include="Minesweeper.h" />

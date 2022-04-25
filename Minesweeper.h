@@ -6,8 +6,9 @@ class Minesweeper
 private:
 
 public:
-	//Minesweeper();
-	//~Minesweeper();
+	Minesweeper();
+	~Minesweeper();
+	void menu();
 	void initialize();
 	void run();
 };
