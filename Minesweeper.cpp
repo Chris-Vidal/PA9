@@ -11,7 +11,7 @@ void Minesweeper::menu()
     sf::RectangleShape background;
     background.setSize(Vector2f(1000, 1000));
     Texture bkgdTexture;
-    bkgdTexture.loadFromFile("test.png");
+    bkgdTexture.loadFromFile("Instructions.png");
     background.setFillColor(Color::Black);
     //background.setTexture(&bkgdTexture);
 
@@ -24,7 +24,7 @@ void Minesweeper::menu()
             sf::RectangleShape info;
             info.setSize(Vector2f(1000, 1000));
             Texture bkgdTexture;
-            bkgdTexture.loadFromFile("test.png");
+            bkgdTexture.loadFromFile("Instructions.png");
             info.setTexture(&bkgdTexture);
 
             if (event.type == Event::Closed)
@@ -87,7 +87,7 @@ void Minesweeper::menu()
                     }
                     if (x == 2)
                     {
-                        exit(1);
+                        exit(0);
                     }
                 }
 
