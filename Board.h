@@ -10,6 +10,7 @@
 
 class Board
 {
+    friend class Test;
 public:
     Board();
     Board(int numBombs);
@@ -33,6 +34,5 @@ public:
 private:
     Tile* pieces[10][10];
     Tile mask[10][10];
-    bool check = false;
-    
+    bool check = false;    
 };
