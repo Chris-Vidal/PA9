@@ -53,9 +53,9 @@ void Board::leftClick(sf::RenderWindow& window, sf::RectangleShape& board)
         for (int j = 0; j < 10; j++)
         {
             if (sf::Mouse::getPosition(window).x > pieces[i][j]->getPosition().x &&
-                ((sf::Mouse::getPosition(window).x > 900 && i == 9) || sf::Mouse::getPosition(window).x < pieces[i + 1][j]->getPosition().x) &&
-                sf::Mouse::getPosition(window).y > pieces[i][j]->getPosition().y &&
-                ((sf::Mouse::getPosition(window).y > 900 && j == 9) || sf::Mouse::getPosition(window).y < pieces[i][j + 1]->getPosition().y))
+                    ((sf::Mouse::getPosition(window).x > 900 && i == 9) || sf::Mouse::getPosition(window).x < pieces[i + 1][j]->getPosition().x) &&
+                    sf::Mouse::getPosition(window).y > pieces[i][j]->getPosition().y &&
+                    ((sf::Mouse::getPosition(window).y > 900 && j == 9) || sf::Mouse::getPosition(window).y < pieces[i][j + 1]->getPosition().y))
             {
                 pieces[i][j]->activate();
                 revealBoard();
@@ -162,15 +162,17 @@ void Board::setup()
 
         window.display();
         if (isGameOver())
-        {
+        {            
             std::cout << "Game Over." << std::endl;
             system("pause");
             window.close();
+            system("cls");
         }
         else if (gameWon()) {
             std::cout << "Game won." << std::endl;
             system("pause");
             window.close();
+            system("cls");
         }
     }
 }
@@ -202,7 +204,7 @@ void Board::placeBombs(int count)
             pieces[randX][randY] = new BombTile(*pieces[randX][randY]);
             count--;
         }
-    } while (count != 0);
+    } while (count > 0);
 }
 
 // Author: NW
@@ -354,11 +356,11 @@ bool Board::gameWon() {
         
         for (int j = 0; j < 10; j++) {
             
-            if (pieces[i][j]->getClicked() == true) {
+            if (pieces[i][j]->getClicked() == true && pieces[i][j]->bombCheck() == false) {
                 // checks to see if tiles are clicked
                 win = true;
             }
-            else if (pieces[i][j]->bombCheck() == true) {
+            else if (pieces[i][j]->bombCheck() == true && pieces[i][j]->getClicked() == false) {
                 // if not clicked checks to see if the tiles are bombs
                 win = true;
             }
@@ -370,4 +372,3 @@ bool Board::gameWon() {
 
     return win;
 }
-
