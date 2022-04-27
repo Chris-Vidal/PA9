@@ -7,6 +7,8 @@ Tile::Tile()
     mType = 'e'; // initially empty
     mClicked = false; // initially unclicked
     mBombNeighborCount = 0; // initially neighborless
+    mGameOver = false;
+
 
     for (int i = 0; i < 8; i++) // initialize Border Tiles to nullptr
     {
